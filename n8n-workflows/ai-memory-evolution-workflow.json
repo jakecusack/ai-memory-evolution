@@ -1,0 +1,455 @@
+{
+  "name": "AI Memory Evolution Demo",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-node",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "content": "# AI Memory Evolution Demo\n\nThis workflow demonstrates three approaches:\n1. **RAG** - Read-only, one-shot retrieval\n2. **Agentic RAG** - Agent-driven retrieval with validation\n3. **AI Memory** - Read-write memory with continual learning\n\nClick 'Test workflow' to start all three paths in parallel.",
+        "height": 200,
+        "width": 400
+      },
+      "id": "sticky-intro",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [220, 100]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "query-1",
+              "name": "query",
+              "value": "What is machine learning?",
+              "type": "string"
+            },
+            {
+              "id": "approach-1",
+              "name": "approach",
+              "value": "RAG",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-rag-query",
+      "name": "Set RAG Query",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [460, 180]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "query-2",
+              "name": "query",
+              "value": "What is machine learning?",
+              "type": "string"
+            },
+            {
+              "id": "approach-2",
+              "name": "approach",
+              "value": "Agentic RAG",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-agentic-query",
+      "name": "Set Agentic RAG Query",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "query-3",
+              "name": "query",
+              "value": "What is machine learning?",
+              "type": "string"
+            },
+            {
+              "id": "approach-3",
+              "name": "approach",
+              "value": "AI Memory",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-memory-query",
+      "name": "Set AI Memory Query",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [460, 420]
+    },
+    {
+      "parameters": {
+        "content": "## RAG Path\n**Read-only, one-shot**\n\n1. Query\n2. Embedding Model\n3. Vectors\n4. Vector DB\n5. Context\n6. LLM (Agent)\n7. Final Response",
+        "height": 180,
+        "width": 250,
+        "color": 4
+      },
+      "id": "sticky-rag",
+      "name": "RAG Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [640, 60]
+    },
+    {
+      "parameters": {
+        "content": "## Agentic RAG Path\n**Read-only via tool calls**\n\n1. Query\n2. LLM (Agent)\n3. Tool Selection\n4. Web Search / Database / API\n5. Context\n6. LLM (Agent)\n7. Final Response",
+        "height": 200,
+        "width": 250,
+        "color": 5
+      },
+      "id": "sticky-agentic",
+      "name": "Agentic RAG Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [640, 260]
+    },
+    {
+      "parameters": {
+        "content": "## AI Memory Path\n**Read-write via tool calls**\n\n1. Query\n2. LLM (Agent)\n3. Search Memory / Tools / Store Memory\n4. Memory Store\n5. Context\n6. LLM (Agent)\n7. Final Response\n\n**Key: Learns from interactions!**",
+        "height": 220,
+        "width": 250,
+        "color": 6
+      },
+      "id": "sticky-memory",
+      "name": "AI Memory Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [640, 480]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "messages": {
+          "values": [
+            {
+              "content": "=You are demonstrating RAG (Retrieval-Augmented Generation).\n\nContext: Python is a high-level programming language. Machine learning enables systems to learn from data.\n\nQuery: {{ $json.query }}\n\nAnswer based on the context above."
+            }
+          ]
+        }
+      },
+      "id": "llm-rag",
+      "name": "LLM - RAG",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [920, 180],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-cred",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "messages": {
+          "values": [
+            {
+              "content": "=You are demonstrating Agentic RAG.\n\nFirst, decide if you need to retrieve information for this query: {{ $json.query }}\n\nIf yes, select from: web_search, database, or api.\nThen validate if results are useful.\n\nContext (after retrieval): Machine learning enables systems to learn from data.\n\nProvide your answer."
+            }
+          ]
+        }
+      },
+      "id": "llm-agentic",
+      "name": "LLM - Agentic RAG",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [920, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-cred",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "messages": {
+          "values": [
+            {
+              "content": "=You are demonstrating AI Memory with read-write capabilities.\n\nQuery: {{ $json.query }}\n\nMemory context: User prefers concise explanations. User is interested in AI.\n\nAnswer the query and indicate what you would store in memory for future interactions."
+            }
+          ]
+        }
+      },
+      "id": "llm-memory",
+      "name": "LLM - AI Memory",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [920, 420],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-cred",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "result-rag",
+              "name": "approach",
+              "value": "={{ $json.approach }}",
+              "type": "string"
+            },
+            {
+              "id": "response-rag",
+              "name": "response",
+              "value": "={{ $json.response }}",
+              "type": "string"
+            },
+            {
+              "id": "characteristics-rag",
+              "name": "characteristics",
+              "value": "Read-only, one-shot retrieval. No decision-making.",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "format-rag-response",
+      "name": "Format RAG Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [1140, 180]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "result-agentic",
+              "name": "approach",
+              "value": "={{ $json.approach }}",
+              "type": "string"
+            },
+            {
+              "id": "response-agentic",
+              "name": "response",
+              "value": "={{ $json.response }}",
+              "type": "string"
+            },
+            {
+              "id": "characteristics-agentic",
+              "name": "characteristics",
+              "value": "Agent decides IF, WHICH, and validates. Still read-only.",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "format-agentic-response",
+      "name": "Format Agentic Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [1140, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "result-memory",
+              "name": "approach",
+              "value": "={{ $json.approach }}",
+              "type": "string"
+            },
+            {
+              "id": "response-memory",
+              "name": "response",
+              "value": "={{ $json.response }}",
+              "type": "string"
+            },
+            {
+              "id": "characteristics-memory",
+              "name": "characteristics",
+              "value": "Read AND write. Learns from interactions. True personalization.",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "format-memory-response",
+      "name": "Format Memory Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [1140, 420]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition"
+      },
+      "id": "merge-results",
+      "name": "Merge All Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1360, 300]
+    },
+    {
+      "parameters": {
+        "content": "=# Results Comparison\n\n**RAG**: {{ $json.rag_response }}\nCharacteristics: {{ $json.rag_characteristics }}\n\n**Agentic RAG**: {{ $json.agentic_response }}\nCharacteristics: {{ $json.agentic_characteristics }}\n\n**AI Memory**: {{ $json.memory_response }}\nCharacteristics: {{ $json.memory_characteristics }}\n\n---\n\n**Key Insight**: Memory enables continual learning and personalization!",
+        "height": 300,
+        "width": 500
+      },
+      "id": "sticky-results",
+      "name": "Results Summary",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1560, 200]
+    }
+  ],
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Set RAG Query",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Agentic RAG Query",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set AI Memory Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set RAG Query": {
+      "main": [
+        [
+          {
+            "node": "LLM - RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Agentic RAG Query": {
+      "main": [
+        [
+          {
+            "node": "LLM - Agentic RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set AI Memory Query": {
+      "main": [
+        [
+          {
+            "node": "LLM - AI Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM - RAG": {
+      "main": [
+        [
+          {
+            "node": "Format RAG Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM - Agentic RAG": {
+      "main": [
+        [
+          {
+            "node": "Format Agentic Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM - AI Memory": {
+      "main": [
+        [
+          {
+            "node": "Format Memory Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format RAG Response": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Agentic Response": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Format Memory Response": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-12-01T00:00:00.000Z",
+  "versionId": "1"
+}
